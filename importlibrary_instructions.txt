@@ -27,8 +27,9 @@ in code
 
 
 ------- seaborn -------
-usually you need to have LAPACK and BLAS installed. this is long and hard (i didn't do it).
-instead, you can download a 'wheel' for python that will allow you to install scipy first.
+usually you need to have LAPACK and BLAS installed. this is long and hard (i didn't do it, 
+and also don't really know what they are). instead, you can download a 'wheel' for python s
+that will allow you to install scipy first.
 link: https://www.lfd.uci.edu/~gohlke/pythonlibs/#scipy
 select the wheel according to the device and version of python being used. you can check the
 version that you're running by using 'python --version' in cmd. i have python 3.10, so i used
