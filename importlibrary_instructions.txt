@@ -1,1 +1,50 @@
+### INSTALLING LIBRARIES IN PYTHON ###
 
+the libraries need a compiler. in vsc, you can use the microsoft C++ build tools
+link: https://visualstudio.microsoft.com/visual-cpp-build-tools/
+run the executable file that downloads
+under 'workload', select c++ build tools
+select: MSVC v142 - VS 2019 C++ x64/x86 build tools (v 14.26)
+select: Windows 10 SDK (10.0.17763.0)
+install
+
+------- matplotlib -------
+in terminal
+    pip install matplotlib
+
+in code
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+
+------- pandas -------
+in terminal 
+    pip install pandas
+    requires: matplotlib and numpy (numpy is downloaded with matplotlib)
+
+in code
+    import pandas as pd 
+
+
+------- seaborn -------
+usually you need to have LAPACK and BLAS installed. this is long and hard (i didn't do it).
+instead, you can download a 'wheel' for python that will allow you to install scipy first.
+link: https://www.lfd.uci.edu/~gohlke/pythonlibs/#scipy
+select the wheel according to the device and version of python being used. you can check the
+version that you're running by using 'python --version' in cmd. i have python 3.10, so i used
+scipy‑1.7.1‑cp310‑cp310‑win_amd64.whl
+
+in terminal
+    pip install [Local File Location]\[Your specific file such as scipy‑1.7.1‑cp310‑cp310‑win_amd64.whl]
+    pip install scipy
+    pip install seaborn
+    requires: matplotlib, numpy, scipy, pandas
+
+in code
+    import seaborn as sns
+
+
+#-#-#-#-# NOTES #-#-#-#-#
+- you can check to see if a package is installed by using 'pip show packageName'
+- these may require the editor to be restarted, so if you install something and it doesn't work try 
+    reopening it 
