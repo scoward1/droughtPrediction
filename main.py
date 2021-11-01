@@ -2,12 +2,16 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
+# import seaborn as sns
 import numpy as np
+import os
 
+print(os.getcwd())
+os.chdir('/Users/sienn/Documents/uni/engg4553/project/droughtPrediction')
+print(os.getcwd())
 
-x = np.linspace(0, 20, 100)     # create a list of evenly space numbers over the range
-range
-plt.plot(x, np.sin(x))          # plot the sine of each x point
-plt.show()
+train1 = pd.read_csv('washington_trainseries.txt', sep = ",", header = 0)
+train2 = pd.read_csv('washington_trainseries2.txt', sep = ",", header = 0)
 
+print(train1.head())
+print(train2['fips'])
