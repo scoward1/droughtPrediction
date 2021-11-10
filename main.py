@@ -8,11 +8,15 @@ from mrmr import mrmr_classif
 import os
 import math
 
-def interpolate_nans(padata, pkind='linear'):
-    aindexes = np.arange(padata.shape[0])
-    agood_indexes, = np.where(np.isfinite(padata))
+# function to interpolate the dlevels that are entered as NaN
+def linInter_NaN(nanData, pkind='linear'):
+    """
+    see: https://stackoverflow.com/a/53050216/2167159
+    """
+    aindexes = np.arange(nanData.shape[0])
+    agood_indexes, = np.where(np.isfinite(nanData))
     f = interp1d(agood_indexes
-               , padata[agood_indexes]
+               , nanData[agood_indexes]
                , bounds_error=False
                , copy=False
                , fill_value="extrapolate"
@@ -38,7 +42,11 @@ dlevel = train['score']                         # creating a class series
 dlevel = dlevel.values                          # changing from series to numpy array
 train = train.drop(columns = "score")           # dropping the class from the dataframe
 
-inter_dlevel = interpolate_nans(dlevel)
+inter_dlevel = linInter_NaN(dlevel)
 
 selected_features = mrmr_classif(train, inter_dlevel, 10)
+"""
+see: pip install git+https://github.com/smazzanti/mrmr
+"""
+print("10 features selected by mRMR: \n")
 print(selected_features)
