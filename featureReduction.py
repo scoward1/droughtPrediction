@@ -10,17 +10,18 @@ from sklearn.linear_model import LogisticRegression
 
 def mrmr_fun(mrmr_df, train, inter_dlevel):
     
-    # best 10 features  
-    pymrmr.mRMR(mrmr_df, 'MIQ', 10)
-    pymrmr.mRMR(mrmr_df, 'MID', 10)
+    # compare MIQ and MID 
+    selected_features = pymrmr.mRMR(mrmr_df, 'MIQ', 10)
+    # pymrmr.mRMR(mrmr_df, 'MID', 10)
 
-    # use mrmr to select the 10 best features
-    selected_features = mrmr_classif(train, inter_dlevel, 10)
+    # comapre FCQ
+    # selected_features = mrmr_classif(train, inter_dlevel, 10)
     """
     see: pip install git+https://github.com/smazzanti/mrmr
     """
-    print("10 features selected by mRMR: \n")
-    print(selected_features)
+    # print("10 features selected by mRMR: \n")
+    # print(selected_features)
+    return selected_features
 
 def sfs_fun(features, classes):
     knn= KNeighborsClassifier(n_neighbors=100)

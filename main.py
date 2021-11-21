@@ -5,16 +5,10 @@ import pandas as pd
 import numpy as np
 from scipy.interpolate import interp1d
 from sklearn.preprocessing import StandardScaler
-from featureReduction import mrmr_fun, sfs_fun
 import os
 import math
-from mlxtend.feature_selection import SequentialFeatureSelector as sfs
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LinearRegression
-from sklearn.feature_selection import SelectKBest
-from sklearn.ensemble import RandomForestRegressor,RandomForestClassifier
-from decimal import Decimal
-from sklearn.linear_model import LogisticRegression
+from featureReduction import mrmr_fun, sfs_fun
+from dimensionReduction import pca_fun
 
 
 # function to interpolate the dlevels that are entered as NaN
@@ -55,9 +49,7 @@ validation.iloc[:, 2:20] = scaler.fit_transform(validation.iloc[:, 2:20].to_nump
 test.iloc[:, 2:20] = scaler.fit_transform(test.iloc[:, 2:20].to_numpy())
 
 # changing date from object to int, train data from float64 to int64
-# multiply the float val by 100,000 so that none of the information is lost
 train['date'] = (pd.to_datetime(train['date']).dt.strftime("%Y%m%d")).astype(np.int64)
-# train.iloc[:, 2:20] = (train.iloc[:, 2:20]*100000).astype(np.int64)
 
 # linearly interpolate the missing dlevels
 inter_dlevel = linInter_NaN(dlevel)
@@ -69,10 +61,18 @@ inter_dlevel_df.columns = ['score']
 mrmr_df = inter_dlevel_df.join(train)
 
 # determine best 10 features using 3 different types of mrmr
-# mrmr_fun(mrmr_df, train, inter_dlevel)
+top_features = mrmr_fun(mrmr_df, train, inter_dlevel)
 
 # use SFS to select 10 best features, use 50,000 points to run
-train_sfs = train.iloc[1:50000,:]
-dlevel_sfs = inter_dlevel_int[1:50000]
-sfs_fun(train_sfs, dlevel_sfs)
+# train_sfs = train.iloc[1:50000,:]
+# dlevel_sfs = inter_dlevel_int[1:50000]
+# sfs_fun(train_sfs, dlevel_sfs)
 
+# only use the top 10 features of the train dataframe
+train_fr = train.filter(top_features, axis = 1)
+# train_fr = train[[top_features]].copy()
+print(train_fr)
+
+# use PCA, return new lower dimension training data
+train_dr = pca_fun(train_fr)
+print(train_dr)
