@@ -1,9 +1,12 @@
 from numpy.core.fromnumeric import mean
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import KFold, cross_val_score, train_test_split
+from sklearn import metrics
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def knn_neighbors(features, dlevel):
     error = []
@@ -33,7 +36,7 @@ def knn_fun(features, dlevel, k_val):
     feat_train, feat_test, dlevel_train, dlevel_test = train_test_split(features, dlevel, test_size = 0.2)
 
     # train the classifier
-    knn = KNeighborsClassifier(n_neighbors = 100)
+    knn = KNeighborsClassifier(n_neighbors = k_val)
     knn.fit(feat_train, dlevel_train)
 
     # run the model to determine the accuracy
@@ -60,3 +63,22 @@ def qda_fun(features, dlevel):
     accuracy = cross_val_score(qda, features, dlevel, scoring = 'accuracy', cv = cv)
 
     return accuracy
+
+def linReg_fun(features, dlevel):
+
+    # split the data into training and testing data
+    feat_train, feat_test, dlevel_train, dlevel_test = train_test_split(features, dlevel, test_size = 0.2)
+    
+    # determine the model to be used
+    linReg = LinearRegression()
+    linReg.fit(feat_train, dlevel_train)
+
+    # run the model
+    dlevel_predict = linReg.predict(feat_test)
+
+    # compare results to actual
+    results = pd.DataFrame({'Actual': dlevel_test, 'Predicted': dlevel_predict})
+
+    print('Mean Absolute Error:', metrics.mean_absolute_error(dlevel_test, dlevel_predict))
+    print('Mean Squared Error:', metrics.mean_squared_error(dlevel_test, dlevel_predict))
+    print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(dlevel_test, dlevel_predict)))
