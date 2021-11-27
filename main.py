@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 # import seaborn as sns
 import numpy as np
+from numpy import mean, std
 from scipy.interpolate import interp1d
 from sklearn.preprocessing import StandardScaler
 import os
@@ -10,6 +11,8 @@ import math
 from featureReduction import mrmr_fun, sfs_fun
 from dimensionReduction import ica_fun, pca_fun
 import sys
+from dimensionReduction import pca_fun
+from models import qda_fun, knn_fun, knn_neighbors, linReg_fun
 
 
 # function to interpolate the dlevels that are entered as NaN
@@ -37,11 +40,12 @@ train2 = pd.read_csv('washington_trainseries2.txt', sep = ",", header = 0)
 train = pd.concat([train1, train2], ignore_index=True)                       # putting both train sets dataframes together
 test = pd.read_csv('Washington_test.txt', sep = ",", header = 0)
 validation = pd.read_csv('Washington_validation.txt', sep = ",", header = 0)
+train = pd.concat([train, validation, test], ignore_index= True)
 
 # rearrange the information to work with the MRMR feature selection
-dlevel = train['score']                                                     # creating a class series
-dlevel = dlevel.values                                                      # changing from series to numpy array
-train = train.drop(columns = "score")                                       # dropping the class from the dataframe
+dlevel = train['score']                                                # creating a class series
+dlevel = dlevel.values                                           # changing from series to numpy array
+train = train.drop(columns = "score")                                        # dropping the class from the dataframe
 
 # normalize the data using the sklearn package (keep the column and index names by using .iloc)
 scaler = StandardScaler()
@@ -94,18 +98,24 @@ print(train.head())
 
 # changing date from object to int, train data from float64 to int64
 #train['date'] = (pd.to_datetime(train['date']).dt.strftime("%Y%m%d")).astype(np.int64)
+# train['date'] = (pd.to_datetime(train['date']).dt.strftime("%Y%m%d")).astype(np.int64)
 
 # linearly interpolate the missing dlevels
 inter_dlevel = linInter_NaN(dlevel)
 inter_dlevel_int = inter_dlevel.astype(np.int64)
 
 # built-in pymrmr requries a df where the first col is the class, the rest are features
-inter_dlevel_df = pd.DataFrame(inter_dlevel)
+# take out the date and location because the number mess it up
+inter_dlevel_df = pd.DataFrame(inter_dlevel_int)
 inter_dlevel_df.columns = ['score']
 #mrmr_df = inter_dlevel_df.join(train)
 
 # determine best 10 features using 3 different types of mrmr
 #top_features = mrmr_fun(mrmr_df, train, inter_dlevel)
+mrmr_df = inter_dlevel_df.join(train.iloc[:, 4:20])
+
+# determine best 10 features using mrmr
+top_features = mrmr_fun(mrmr_df, train, inter_dlevel_int)
 
 # use SFS to select 10 best features, use 50,000 points to run
 #train_sfs = train.iloc[1:50000,3:20]
@@ -113,14 +123,21 @@ inter_dlevel_df.columns = ['score']
 #sfs_fun(train_sfs, dlevel_sfs)
 
 # only use the top 10 features of the train dataframe
-#train_fr = train.filter(top_features, axis = 1)
-#train_fr = train[[top_features]].copy()
-#print(train_fr)
+train_fr = train.filter(top_features, axis = 1)
 
 # use PCA, return new lower dimension training data
-#train_dr = pca_fun(train_fr)
-#print(train_dr)
+train_dr = pca_fun(train_fr)
 
-#Use ICA, return new lower dimension training data
-#train_dr_ica = ica_fun(train_fr)
-#print(train_dr_ica)
+# QDA
+# qda_acc = qda_fun(train_dr, train_inter_dlevel_int)
+# print('Accuracy: %.3f (%.3f)' % (mean(qda_acc), std(qda_acc)))
+
+# KNN - optimal k-value determined by knn_neighbors (only have to use once)
+# knn_neighbors(train_dr, train_inter_dlevel_int)
+# knn_neighbors = 100
+# knn_acc = knn_fun(train_dr, train_inter_dlevel_int, knn_neighbors)
+# print(knn_acc)
+
+# linear regression
+linReg_fun(train_dr, inter_dlevel)
+linReg_fun(train_dr, inter_dlevel_int)

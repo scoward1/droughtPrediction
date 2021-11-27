@@ -8,13 +8,13 @@ from sklearn.ensemble import RandomForestRegressor,RandomForestClassifier
 from decimal import Decimal
 from sklearn.linear_model import LogisticRegression
 
-def mrmr_fun(mrmr_df, train, inter_dlevel):
+def mrmr_fun(train_mrmr, train, inter_dlevel):
     
     # compare MIQ and MID 
-    selected_features = pymrmr.mRMR(mrmr_df, 'MIQ', 10)
-    # pymrmr.mRMR(mrmr_df, 'MID', 10)
+    selected_features = pymrmr.mRMR(train_mrmr, 'MIQ', 10)
+    # pymrmr.mRMR(train_mrmr, 'MID', 10)
 
-    # comapre FCQ
+    # compare FCQ
     # selected_features = mrmr_classif(train, inter_dlevel, 10)
     """
     see: pip install git+https://github.com/smazzanti/mrmr

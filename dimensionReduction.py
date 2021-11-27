@@ -9,12 +9,13 @@ def pca_fun(train):
     pca = PCA(n_components) #  = 0.90, svd_solver = 'full'
     reduced_train = pca.fit_transform(train)
 
-    # check the variance and keep 95%
+    # check the variance and keep 99%
     tot_var = pca.explained_variance_ratio_.cumsum()
-    print(tot_var)
+    # print(tot_var)
+    
     num_feat = 1
     for item in tot_var:
-        if item >= 0.95:
+        if item >= 0.99:
            break
         else:
             num_feat += 1
