@@ -1,12 +1,15 @@
-from numpy.core.fromnumeric import mean
+from numpy.core.fromnumeric import mean,std
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import KFold, cross_val_score, train_test_split
+from sklearn.model_selection import KFold, cross_val_score, train_test_split, RepeatedStratifiedKFold
 from sklearn import metrics
+from sklearn.datasets import make_classification
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+
 
 def knn_neighbors(features, dlevel):
     error = []
@@ -82,3 +85,26 @@ def linReg_fun(features, dlevel):
     print('Mean Absolute Error:', metrics.mean_absolute_error(dlevel_test, dlevel_predict))
     print('Mean Squared Error:', metrics.mean_squared_error(dlevel_test, dlevel_predict))
     print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(dlevel_test, dlevel_predict)))
+
+
+def lda(features, dlevel):
+    #Reduced Dataset to be trained
+
+        [set,drought] = make_classification(n_samples=dlevel.size,n_features=10,n_classes=4,n_clusters_per_class = 1)
+
+    #Define LDA
+        lda = LinearDiscriminantAnalysis()
+    
+    #Fit LDA
+        lda.fit (set,drought)
+
+    #Model Results
+
+    #kfold
+        crossval = RepeatedStratifiedKFold(n_splits=5,random_state = None)
+        score = cross_val_score(lda, set, drought, scoring = 'accuracy', cv=crossval,n_jobs=1)
+    
+    #Print the Score
+
+        print('Mean Accuracy(Standard Deviation): %.3f (%.3f)' % (mean(score), std(score)))
+

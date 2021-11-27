@@ -10,7 +10,7 @@ import os
 from featureReduction import mrmr_fun, sfs_fun
 from dimensionReduction import ica_fun, pca_fun
 from dimensionReduction import pca_fun
-from models import qda_fun, knn_fun, knn_neighbors, linReg_fun
+from models import qda_fun, knn_fun, knn_neighbors, linReg_fun, lda
 
 
 # function to interpolate the dlevels that are entered as NaN
@@ -28,8 +28,8 @@ def linInter_NaN(nanData, pkind='linear'):
                , kind=pkind)
     return f(aindexes)
 
-os.chdir('D:/uni/year4/ece4553/project/localRepo/droughtPrediction')        # locRepo for sie
-# os.chdir('/Users/Acer/Documents/Drought')                                  # locRepo for max
+#os.chdir('D:/uni/year4/ece4553/project/localRepo/droughtPrediction')        # locRepo for sie
+os.chdir('/Users/Acer/Documents/Drought')                                  # locRepo for max
 
 # read the data. train set brought in in two parts because it was too large to
 # do at the same time. turned into numpy arrays to allow for normalization of data
@@ -48,12 +48,13 @@ train = train.drop(columns = "score")                                   # droppi
 Location = train.iloc[:,0]
 
 count = 1
-
+"""""
 for x in range (len(Location)):
     if(x<= 6210*count):
         Location[x] = count
         if (x % 6210 == 0 and x!=0):
               count = count+1
+"""
 
 # break apart date
 new_date = train
@@ -117,3 +118,6 @@ print('Accuracy: %.3f (%.3f)' % (mean(qda_acc), std(qda_acc)))
 # linear regression
 linReg_fun(train_dr, inter_dlevel)
 linReg_fun(train_dr, inter_dlevel_int)
+
+#Linear Discriminant Analysis
+lda(train_dr, inter_dlevel)
