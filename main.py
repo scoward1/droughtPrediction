@@ -1,16 +1,16 @@
 # importing libraries
 import pandas as pd
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # import seaborn as sns
 import numpy as np
+from numpy import mean, std
 from scipy.interpolate import interp1d
 from sklearn.preprocessing import StandardScaler
 import os
 import math
 from featureReduction import mrmr_fun, sfs_fun
 from dimensionReduction import pca_fun
-from models import qda_fun
-
+from models import qda_fun, knn_fun, knn_neighbors
 
 # function to interpolate the dlevels that are entered as NaN
 def linInter_NaN(nanData, pkind='linear'):
@@ -37,7 +37,7 @@ train2 = pd.read_csv('washington_trainseries2.txt', sep = ",", header = 0)
 train = pd.concat([train1, train2], ignore_index=True)                       # putting both train sets dataframes together
 test = pd.read_csv('Washington_test.txt', sep = ",", header = 0)
 validation = pd.read_csv('Washington_validation.txt', sep = ",", header = 0)
-train = pd.concat([train, test], ignore_index= True)
+train = pd.concat([train, validation, test], ignore_index= True)
 
 # rearrange the information to work with the MRMR feature selection
 train_dlevel = train['score']                                                # creating a class series
@@ -56,7 +56,6 @@ test.iloc[:, 2:20] = scaler.fit_transform(test.iloc[:, 2:20].to_numpy())
 # linearly interpolate the missing dlevels
 train_inter_dlevel = linInter_NaN(train_dlevel)
 train_inter_dlevel_int = train_inter_dlevel.astype(np.int64)
-
 
 # built-in pymrmr requries a df where the first col is the class, the rest are features
 # take out the date and location because the number mess it up
@@ -79,5 +78,11 @@ train_fr = train.filter(train_top_features, axis = 1)
 train_dr = pca_fun(train_fr)
 
 # QDA
-qda_acc = qda_fun(train_dr, train_inter_dlevel_int)
-print(qda_acc)
+# qda_acc = qda_fun(train_dr, train_inter_dlevel_int)
+# print('Accuracy: %.3f (%.3f)' % (mean(qda_acc), std(qda_acc)))
+
+# KNN - optimal k-value determined by knn_neighbors (only have to use once)
+knn_neighbors(train_dr, train_inter_dlevel_int)
+knn_neighbors = 5
+knn_acc = knn_fun(train_dr, train_inter_dlevel_int, knn_neighbors)
+print(knn_acc)
