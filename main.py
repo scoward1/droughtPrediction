@@ -10,7 +10,7 @@ import os
 from featureReduction import mrmr_fun, sfs_fun
 from dimensionReduction import ica_fun, pca_fun
 from dimensionReduction import pca_fun
-from models import qda_fun, knn_fun, knn_neighbors, linReg_fun, lda
+from models import qda_fun, knn_fun, knn_neighbors, linReg_fun, lda, SvM
 
 
 # function to interpolate the dlevels that are entered as NaN
@@ -121,3 +121,6 @@ linReg_fun(train_dr, inter_dlevel_int)
 
 #Linear Discriminant Analysis
 lda(train_dr, inter_dlevel)
+
+#Standard Vector Machine
+SvM(train_dr, inter_dlevel_int)

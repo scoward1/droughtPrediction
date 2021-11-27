@@ -3,7 +3,7 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import KFold, cross_val_score, train_test_split, RepeatedStratifiedKFold
-from sklearn import metrics
+from sklearn import metrics, svm
 from sklearn.datasets import make_classification
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import numpy as np
@@ -98,13 +98,20 @@ def lda(features, dlevel):
     #Fit LDA
         lda.fit (set,drought)
 
-    #Model Results
-
     #kfold
         crossval = RepeatedStratifiedKFold(n_splits=5,random_state = None)
         score = cross_val_score(lda, set, drought, scoring = 'accuracy', cv=crossval,n_jobs=1)
     
     #Print the Score
+        print('LDA Mean Accuracy(Standard Deviation): %.3f (%.3f)' % (mean(score), std(score)))
 
-        print('Mean Accuracy(Standard Deviation): %.3f (%.3f)' % (mean(score), std(score)))
+def SvM(features, dlevel):
+    sup_vec = svm.SVC(kernel='linear')
 
+    feat_train, feat_test, dlevel_train, dlevel_test = train_test_split(features, dlevel, test_size = 0.2)
+
+    sup_vec.fit(feat_train, dlevel_train)
+
+    predict = sup_vec.predict(feat_test)
+
+    print("svm accuracy:",metrics.accuracy_score(dlevel_test,predict))
