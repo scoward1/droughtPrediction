@@ -8,9 +8,9 @@ from scipy.interpolate import interp1d
 from sklearn.preprocessing import StandardScaler
 import os
 from featureReduction import mrmr_fun, sfs_fun
-from dimensionReduction import ica_fun, pca_fun
 from dimensionReduction import pca_fun
-from models import qda_fun, knn_fun, knn_neighbors, linReg_fun, lda, SvM
+from dimensionReduction import pca_fun
+from models import qda_fun, knn_fun, knn_neighbors, linReg_fun, lda, SvM, knnReg_fun
 
 
 # function to interpolate the dlevels that are entered as NaN
@@ -28,8 +28,8 @@ def linInter_NaN(nanData, pkind='linear'):
                , kind=pkind)
     return f(aindexes)
 
-#os.chdir('D:/uni/year4/ece4553/project/localRepo/droughtPrediction')        # locRepo for sie
-os.chdir('/Users/Acer/Documents/Drought')                                  # locRepo for max
+os.chdir('D:/uni/year4/ece4553/project/localRepo/droughtPrediction')        # locRepo for sie
+# os.chdir('/Users/Acer/Documents/Drought')                                  # locRepo for max
 
 # read the data. train set brought in in two parts because it was too large to
 # do at the same time. turned into numpy arrays to allow for normalization of data
@@ -98,29 +98,27 @@ top_features = mrmr_fun(mrmr_df, train, inter_dlevel)
 train_fr = train.filter(top_features, axis = 1)
 
 # use SFS to select 10 best features, use 50,000 points to run
-#train_sfs = train.iloc[1:50000,3:20]
-#dlevel_sfs = inter_dlevel_int[1:50000]
-#sfs_fun(train_sfs, dlevel_sfs)
+# train_sfs = train.iloc[1:50000,3:20]
+# dlevel_sfs = inter_dlevel_int[1:50000]
+# sfs_fun(train_sfs, dlevel_sfs)
 
 # use PCA, return new lower dimension training data
 train_dr = pca_fun(train_fr)
 
+#Linear Discriminant Analysis
+lda(train_dr, inter_dlevel_int)
+
 # QDA
-qda_acc = qda_fun(train_dr, inter_dlevel_int)
-print('Accuracy: %.3f (%.3f)' % (mean(qda_acc), std(qda_acc)))
+qda_fun(train_dr, inter_dlevel_int)
+
+# Standard Vector Machine
+SvM(train_dr, inter_dlevel_int)
 
 # KNN - optimal k-value determined by knn_neighbors (only have to use once)
 # knn_neighbors(train_dr, inter_dlevel_int)
-# knn_neighbors = 100
-# knn_acc = knn_fun(train_dr, inter_dlevel_int, knn_neighbors)
-# print(knn_acc)
+knn_neighbors = 100
+knn_fun(train_dr, inter_dlevel_int, knn_neighbors)
+knnReg_fun(train_dr, inter_dlevel, knn_neighbors)
 
 # linear regression
 linReg_fun(train_dr, inter_dlevel)
-linReg_fun(train_dr, inter_dlevel_int)
-
-#Linear Discriminant Analysis
-lda(train_dr, inter_dlevel)
-
-#Standard Vector Machine
-SvM(train_dr, inter_dlevel_int)
