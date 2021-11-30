@@ -48,7 +48,7 @@ train = train.drop(columns = "score")                                   # droppi
 Location = train.iloc[:,0]
 
 count = 1
-"""""
+"""
 for x in range (len(Location)):
     if(x<= 6210*count):
         Location[x] = count
@@ -78,7 +78,6 @@ train['day'] = new_date.day
 train['month'] = new_date.month
 train['year'] = new_date.year
 train['Location'] = Location
-# print(train.head())
 
 # normalize the data using the sklearn package (keep the column and index names by using .iloc)
 scaler = StandardScaler()
@@ -112,11 +111,11 @@ lda(train_dr, inter_dlevel_int)
 qda_fun(train_dr, inter_dlevel_int)
 
 # Standard Vector Machine
-SvM(train_dr, inter_dlevel_int)
+# SvM(train_dr, inter_dlevel_int)
 
 # KNN - optimal k-value determined by knn_neighbors (only have to use once)
 # knn_neighbors(train_dr, inter_dlevel_int)
-knn_neighbors = 100
+knn_neighbors = 5
 knn_fun(train_dr, inter_dlevel_int, knn_neighbors)
 knnReg_fun(train_dr, inter_dlevel, knn_neighbors)
 
