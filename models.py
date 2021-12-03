@@ -40,7 +40,7 @@ def knn_neighbors(features, dlevel):
     # create new a knn model
     knn = KNeighborsClassifier()
     # create a dictionary of all values we want to test for n_neighbors
-    param_grid = {'n_neighbors': np.arange(1, 500)}
+    param_grid = {'n_neighbors': np.arange(1, 5000)}
     # use gridsearch to test all values for n_neighbors
     knn_grid = GridSearchCV(knn, param_grid, cv=5)
     # fit model to data

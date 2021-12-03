@@ -1,6 +1,5 @@
 # importing libraries
 import pandas as pd
-import matplotlib.pyplot as plt
 # import seaborn as sns
 import numpy as np
 from numpy import inner, mean, std
@@ -102,22 +101,22 @@ train_fr = train.filter(top_features, axis = 1)
 # sfs_fun(train_sfs, dlevel_sfs)
 
 # use PCA, return new lower dimension training data
-train_dr = pca_fun(train_fr)
+train_dr = pca_fun(train_fr, inter_dlevel_int)
 
 #Linear Discriminant Analysis
-lda(train_dr, inter_dlevel_int)
+# lda(train_dr, inter_dlevel_int)
 
 # QDA
-qda_fun(train_dr, inter_dlevel_int)
+# qda_fun(train_dr, inter_dlevel_int)
 
 # Standard Vector Machine
 # SvM(train_dr, inter_dlevel_int)
 
 # KNN - optimal k-value determined by knn_neighbors (only have to use once)
 # knn_neighbors(train_dr, inter_dlevel_int)
-knn_neighbors = 5
-knn_fun(train_dr, inter_dlevel_int, knn_neighbors)
-knnReg_fun(train_dr, inter_dlevel, knn_neighbors)
+# knn_neighbors = 100
+# knn_fun(train_dr, inter_dlevel_int, knn_neighbors)
+# knnReg_fun(train_dr, inter_dlevel, knn_neighbors)
 
 # linear regression
-linReg_fun(train_dr, inter_dlevel)
+# linReg_fun(train_dr, inter_dlevel)
