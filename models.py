@@ -13,7 +13,7 @@ import pandas as pd
 import itertools as it
 
 
-classes = ["D0", "D1", "D2", "D3", "D4"]
+classes = ["D0", "D1", "D2", "D3", "D4", "D5"]
 
 def knn_neighbors(features, dlevel):
     """

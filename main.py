@@ -32,10 +32,19 @@ os.chdir('D:/uni/year4/ece4553/project/localRepo/droughtPrediction')        # lo
 
 # read the data. train set brought in in two parts because it was too large to
 # do at the same time. turned into numpy arrays to allow for normalization of data
+"""
 train1 = pd.read_csv('washington_trainseries.txt', sep = ",", header = 0)
 train2 = pd.read_csv('washington_trainseries2.txt', sep = ",", header = 0)
 test = pd.read_csv('Washington_test.txt', sep = ",", header = 0)
 validation = pd.read_csv('Washington_validation.txt', sep = ",", header = 0)
+frames = [train1, train2, validation, test]
+train = pd.concat(frames, ignore_index= True)
+"""
+
+train1 = pd.read_csv('california_trainseries.txt', sep = ",", header = 0)
+train2 = pd.read_csv('california_trainseries2.txt', sep = ",", header = 0)
+test = pd.read_csv('california_testseries.txt', sep = ",", header = 0)
+validation = pd.read_csv('california_validationseries.txt', sep = ",", header = 0)
 frames = [train1, train2, validation, test]
 train = pd.concat(frames, ignore_index= True)
 
@@ -104,19 +113,19 @@ train_fr = train.filter(top_features, axis = 1)
 train_dr = pca_fun(train_fr, inter_dlevel_int)
 
 #Linear Discriminant Analysis
-# lda(train_dr, inter_dlevel_int)
+lda(train_dr, inter_dlevel_int)
 
 # QDA
-# qda_fun(train_dr, inter_dlevel_int)
+qda_fun(train_dr, inter_dlevel_int)
 
 # Standard Vector Machine
 # SvM(train_dr, inter_dlevel_int)
 
 # KNN - optimal k-value determined by knn_neighbors (only have to use once)
 # knn_neighbors(train_dr, inter_dlevel_int)
-# knn_neighbors = 100
-# knn_fun(train_dr, inter_dlevel_int, knn_neighbors)
-# knnReg_fun(train_dr, inter_dlevel, knn_neighbors)
+knn_neighbors = 5
+knn_fun(train_dr, inter_dlevel_int, knn_neighbors)
+knnReg_fun(train_dr, inter_dlevel, knn_neighbors)
 
 # linear regression
-# linReg_fun(train_dr, inter_dlevel)
+linReg_fun(train_dr, inter_dlevel)
