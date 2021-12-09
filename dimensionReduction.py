@@ -4,9 +4,9 @@ from pandas.core.indexing import IndexSlice
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
-def pca_fun(train, dlevel):
+def pca_fun(train, dlevel, n_components):
     # all feature reduction was done to get 10 features
-    n_components = 10
+    # n_components = 10
 
     pca = PCA(n_components)
     reduced_train = pca.fit_transform(train)
@@ -23,7 +23,7 @@ def pca_fun(train, dlevel):
 
     reduced_train = reduced_train[:, 0:num_feat]
 
-    plot2PC(reduced_train, dlevel)
+    # plot2PC(reduced_train, dlevel)
 
     return reduced_train
 

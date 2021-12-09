@@ -13,10 +13,9 @@ import pandas as pd
 import itertools as it
 
 
-classes = ["D0", "D1", "D2", "D3", "D4", "D5"]
+classes = ["D0", "D1", "D2", "D3", "D4"]
 
 def knn_neighbors(features, dlevel):
-    """
     error = []
 
     feat_train, feat_test, dlevel_train, dlevel_test = train_test_split(features, dlevel, test_size = 0.2)
@@ -36,19 +35,6 @@ def knn_neighbors(features, dlevel):
     plt.show()
 
     return error
-    """
-    # create new a knn model
-    knn = KNeighborsClassifier()
-    # create a dictionary of all values we want to test for n_neighbors
-    param_grid = {'n_neighbors': np.arange(1, 5000)}
-    # use gridsearch to test all values for n_neighbors
-    knn_grid = GridSearchCV(knn, param_grid, cv=5)
-    # fit model to data
-    knn_grid.fit(features, dlevel)
-    # check top performing n_neighbors value
-    print(knn_grid.best_params_)
-    # check mean score for the top performing value of n_neighbors
-    print(knn_grid.best_score_)
 
 
 def knn_fun(features, dlevel, k_val):
@@ -179,8 +165,8 @@ def lda(features, dlevel):
     #kfold
     cv = RepeatedStratifiedKFold(n_splits=5, random_state = None)
     score = cross_val_score(lda, features, dlevel, scoring = 'accuracy', cv=cv,n_jobs=1)
-    kf = KFold(n_splits = 5)
     
+    kf = KFold(n_splits = 5)
     confusion_matrix_array = []
     for train_index, test_index in kf.split(features):
         feat_train, feat_test = features[train_index], features[test_index]
@@ -193,9 +179,11 @@ def lda(features, dlevel):
     confusion_matrix_sum = np.sum(confusion_matrix_array, axis = 0)
 
     plot_confusion_matrix(confusion_matrix_sum, "LDA Confusion Matrix", classes)
-
+    
     #Print the Score
     print('\nLDA Mean Accuracy(Standard Deviation): %.3f (%.3f)' % (mean(score), std(score)))
+
+    return mean(score)
 
 
 def SvM(features, dlevel):

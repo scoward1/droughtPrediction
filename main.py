@@ -10,6 +10,7 @@ from featureReduction import mrmr_fun, sfs_fun
 from dimensionReduction import pca_fun
 from dimensionReduction import pca_fun
 from models import qda_fun, knn_fun, knn_neighbors, linReg_fun, lda, SvM, knnReg_fun
+import matplotlib.pyplot as plt
 
 
 # function to interpolate the dlevels that are entered as NaN
@@ -32,7 +33,7 @@ os.chdir('D:/uni/year4/ece4553/project/localRepo/droughtPrediction')        # lo
 
 # read the data. train set brought in in two parts because it was too large to
 # do at the same time. turned into numpy arrays to allow for normalization of data
-"""
+
 train1 = pd.read_csv('washington_trainseries.txt', sep = ",", header = 0)
 train2 = pd.read_csv('washington_trainseries2.txt', sep = ",", header = 0)
 test = pd.read_csv('Washington_test.txt', sep = ",", header = 0)
@@ -40,14 +41,13 @@ validation = pd.read_csv('Washington_validation.txt', sep = ",", header = 0)
 frames = [train1, train2, validation, test]
 train = pd.concat(frames, ignore_index= True)
 """
-
 train1 = pd.read_csv('california_trainseries.txt', sep = ",", header = 0)
 train2 = pd.read_csv('california_trainseries2.txt', sep = ",", header = 0)
 test = pd.read_csv('california_testseries.txt', sep = ",", header = 0)
 validation = pd.read_csv('california_validationseries.txt', sep = ",", header = 0)
 frames = [train1, train2, validation, test]
 train = pd.concat(frames, ignore_index= True)
-
+"""
 # rearrange the information to work with the MRMR feature selection
 dlevel = pd.Series(train["score"].values)                               # creating a class series
 train = train.drop(columns = "score")                                   # dropping the class from the dataframe
@@ -56,13 +56,11 @@ train = train.drop(columns = "score")                                   # droppi
 Location = train.iloc[:,0]
 
 count = 1
-"""
 for x in range (len(Location)):
     if(x<= 6210*count):
         Location[x] = count
         if (x % 6210 == 0 and x!=0):
               count = count+1
-"""
 
 # break apart date
 new_date = train
@@ -101,8 +99,9 @@ inter_dlevel_df.columns = ['score']
 mrmr_df = inter_dlevel_df.join(train)
 
 # determine best 10 features using mrmr
-top_features = mrmr_fun(mrmr_df, train, inter_dlevel)
+top_features = mrmr_fun(mrmr_df, train, inter_dlevel, 10)
 train_fr = train.filter(top_features, axis = 1)
+train_dr = pca_fun(train_fr, inter_dlevel_int, 10)
 
 # use SFS to select 10 best features, use 50,000 points to run
 # train_sfs = train.iloc[1:50000,3:20]
@@ -110,19 +109,19 @@ train_fr = train.filter(top_features, axis = 1)
 # sfs_fun(train_sfs, dlevel_sfs)
 
 # use PCA, return new lower dimension training data
-train_dr = pca_fun(train_fr, inter_dlevel_int)
+# train_dr = pca_fun(train_fr, inter_dlevel_int)
 
 #Linear Discriminant Analysis
-lda(train_dr, inter_dlevel_int)
+# lda(train_dr, inter_dlevel_int)
 
 # QDA
-qda_fun(train_dr, inter_dlevel_int)
+# qda_fun(train_dr, inter_dlevel_int)
 
 # Standard Vector Machine
 # SvM(train_dr, inter_dlevel_int)
 
 # KNN - optimal k-value determined by knn_neighbors (only have to use once)
-# knn_neighbors(train_dr, inter_dlevel_int)
+# knn_neighbors(train_dr, inter_dlevel_int) # determine optimal number of k-values
 knn_neighbors = 5
 knn_fun(train_dr, inter_dlevel_int, knn_neighbors)
 knnReg_fun(train_dr, inter_dlevel, knn_neighbors)
