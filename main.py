@@ -1,16 +1,15 @@
 # importing libraries
 import pandas as pd
-# import seaborn as sns
+import seaborn as sns
+import matplotlib.pyplot as plt
 import numpy as np
 from numpy import inner, mean, std
 from scipy.interpolate import interp1d
 from sklearn.preprocessing import StandardScaler
 import os
 from featureReduction import mrmr_fun, sfs_fun
-from dimensionReduction import pca_fun
-from dimensionReduction import pca_fun
+from dimensionReduction import pca_fun, SVD
 from models import qda_fun, knn_fun, knn_neighbors, linReg_fun, lda, SvM, knnReg_fun
-import matplotlib.pyplot as plt
 
 
 # function to interpolate the dlevels that are entered as NaN
@@ -101,26 +100,29 @@ mrmr_df = inter_dlevel_df.join(train)
 # determine best 10 features using mrmr
 top_features = mrmr_fun(mrmr_df, train, inter_dlevel, 10)
 train_fr = train.filter(top_features, axis = 1)
-train_dr = pca_fun(train_fr, inter_dlevel_int, 10)
 
-# use SFS to select 10 best features, use 50,000 points to run
-# train_sfs = train.iloc[1:50000,3:20]
-# dlevel_sfs = inter_dlevel_int[1:50000]
-# sfs_fun(train_sfs, dlevel_sfs)
+# use SFS to select 10 best features
+#train_sfs = train.iloc[:,0:22]
+#level_sfs = inter_dlevel_int
+#feats = sfs_fun(train_sfs, level_sfs)
+#train_sfs = train.filter(feats, axis = 1)
 
 # use PCA, return new lower dimension training data
-# train_dr = pca_fun(train_fr, inter_dlevel_int)
+train_dr = pca_fun(train_fr, inter_dlevel_int)
 
-#Linear Discriminant Analysis
-# lda(train_dr, inter_dlevel_int)
+# SVD - Singular Value Decomposition
+train_SVD = SVD(train_fr,inter_dlevel_int)
 
-# QDA
-# qda_fun(train_dr, inter_dlevel_int)
+# LDA - Linear Discriminent Analysis
+lda(train_dr, inter_dlevel_int)
 
-# Standard Vector Machine
-# SvM(train_dr, inter_dlevel_int)
+# QDA - Quadratice Disriminent Analysis
+qda_fun(train_dr, inter_dlevel_int)
 
-# KNN - optimal k-value determined by knn_neighbors (only have to use once)
+# SVM - Standard Vector Machine
+SvM(train_dr, inter_dlevel_int)
+
+# KNN - k-Nearest Neigbors
 # knn_neighbors(train_dr, inter_dlevel_int) # determine optimal number of k-values
 knn_neighbors = 5
 knn_fun(train_dr, inter_dlevel_int, knn_neighbors)
@@ -128,3 +130,12 @@ knnReg_fun(train_dr, inter_dlevel, knn_neighbors)
 
 # linear regression
 linReg_fun(train_dr, inter_dlevel)
+
+# used to plot the correlation maps for feature selection
+correl = train.corr()
+mask = np.triu(np.ones_like(correl, dtype=np.bool))
+sns.set_style(style = 'white')
+sns.set(font_scale=1)
+cmap = sns.diverging_palette(10, 250, as_cmap=True)
+sns.heatmap(correl, cmap=cmap, mask=mask, cbar_kws={"shrink":.5}, annot=True)
+plt.show()

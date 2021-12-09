@@ -11,30 +11,29 @@ from sklearn.linear_model import LogisticRegression
 def mrmr_fun(train_mrmr, train, inter_dlevel, numFeats):
     
     # compare MIQ and MID 
-    selected_features = pymrmr.mRMR(train_mrmr, 'MIQ', numFeats)
-    # pymrmr.mRMR(train_mrmr, 'MID', 10)
+    #selected_features = pymrmr.mRMR(train_mrmr, 'MIQ', numFeats)
+    #selected_features = pymrmr.mRMR(train_mrmr, 'MID', numFeats)
 
     # compare FCQ
-    # selected_features = mrmr_classif(train, inter_dlevel, 10)
+    selected_features = mrmr_classif(train, inter_dlevel, 10)
     """
     see: pip install git+https://github.com/smazzanti/mrmr
     """
-    # print("10 features selected by mRMR: \n")
-    # print(selected_features)
+    print("10 features selected by mRMR: \n")
+    print(selected_features)
     return selected_features
 
 def sfs_fun(features, classes):
-    knn= KNeighborsClassifier(n_neighbors=100)
-    # Lreg = LogisticRegression()
+    #knn= KNeighborsClassifier(n_neighbors=100)
+    Lreg = LogisticRegression()
     # clf = RandomForestClassifier(n_estimators=100, n_jobs=-1)
     
-    sfs_set = sfs(knn,
+    sfs_set = sfs(Lreg,
         k_features=10,
         forward =True,
         floating = False,
         verbose =2,
-        scoring= 'accuracy',
-        cv=5).fit(features, classes)
+        scoring= 'accuracy').fit(features, classes)
 
     feat_names = list(sfs_set.k_feature_names_)
     print(feat_names)
@@ -43,3 +42,4 @@ def sfs_fun(features, classes):
     print(sfs_set.k_feature_idx_)
     print('CV Score:')
     print(sfs_set.k_score_)
+    return feat_names
